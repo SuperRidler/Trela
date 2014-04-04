@@ -1,21 +1,23 @@
 package com.trela.app;
 
-import java.util.Locale;
-
-import android.support.v7.app.ActionBarActivity;
-import android.support.v7.app.ActionBar;
+import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
-import android.support.v4.app.FragmentTransaction;
 import android.support.v4.app.FragmentPagerAdapter;
-import android.os.Bundle;
+import android.support.v4.app.FragmentTransaction;
 import android.support.v4.view.ViewPager;
+import android.support.v7.app.ActionBar;
+import android.support.v7.app.ActionBarActivity;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ArrayAdapter;
+import android.widget.ListView;
 import android.widget.TextView;
+
+import java.util.Locale;
 
 
 public class Trela extends ActionBarActivity implements ActionBar.TabListener {
@@ -176,14 +178,37 @@ public class Trela extends ActionBarActivity implements ActionBar.TabListener {
         @Override
         public View onCreateView(LayoutInflater inflater, ViewGroup container,
                 Bundle savedInstanceState) {
+            int id = getArguments().getInt(ARG_SECTION_NUMBER);
+            switch(id){
+                case 4:
+                    return getTestView(inflater, container);
+                default:
+                    return getDefaultView(inflater, container);
+            }
+        }
+
+        public View getDefaultView(LayoutInflater inflater, ViewGroup container) {
             View rootView = inflater.inflate(R.layout.fragment_main, container, false);
             TextView textView;
-            try {
-                textView = (TextView) rootView.findViewById(R.id.section_label);
-                textView.setText("Page: " + Integer.toString(getArguments().getInt(ARG_SECTION_NUMBER)));
-            } catch (NullPointerException e) {
-                e.printStackTrace();
+            textView = (TextView) rootView.findViewById(R.id.section_label);
+            textView.setText("Page: " + Integer.toString(getArguments().getInt(ARG_SECTION_NUMBER)));
+            return rootView;
+        }
+
+        public View getTestView(LayoutInflater inflater, ViewGroup container) {
+            int items = 100;
+            String[] listItems = new String[items];
+            for (int i = 0; i < items; i++) {
+                listItems[i] = Integer.toString(i);
             }
+            View rootView = inflater.inflate(R.layout.list_people, container, false);
+            TextView textView;
+            textView = (TextView) rootView.findViewById(R.id.section_label);
+            textView.setText("Page: " + Integer.toString(getArguments().getInt(ARG_SECTION_NUMBER)));
+            ListView listView;
+            listView = (ListView) rootView.findViewById(R.id.list_view);
+            ArrayAdapter adapter = new ArrayAdapter(listView.getContext(),  android.R.layout.simple_list_item_1, listItems);
+            listView.setAdapter(adapter);
             return rootView;
         }
     }
